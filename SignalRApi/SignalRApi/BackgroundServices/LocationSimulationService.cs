@@ -1,21 +1,20 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using SignalRTestAPI.Hubs;
 
-namespace SignalRTestAPI.BackgroundServices
+namespace SignalRApi.BackgroundServices
 {
     public sealed class LocationSimulationService : BackgroundService
     {
         private readonly IHubContext<MapHub> _hubContext;
-        private readonly Random _random = new();
 
-        public LocationSimulationService(IHubContext<MapHub> hubContext, Random random)
+        public LocationSimulationService(IHubContext<MapHub> hubContext)
         {
             _hubContext = hubContext;
-            _random = random;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            Random _random = new();
             while (!stoppingToken.IsCancellationRequested)
             {
                 double lat = 37 + _random.NextDouble();
