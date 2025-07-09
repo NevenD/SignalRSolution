@@ -13,12 +13,13 @@
 *.vs
 *obj
 *vs
-# Ignore Visual Studio workspace and cache folders
+
+
 **/.vs
 **/obj
 **/bin
 
-*
+
 *SignalRApi/obj
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
