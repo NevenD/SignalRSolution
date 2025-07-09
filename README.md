@@ -15,7 +15,6 @@ This project demonstrates a real-time location broadcasting system using **ASP.N
 - 🗺️ Interactive map display with OpenLayers
 - ⚙️ Background location simulation with `BackgroundService`
 - 📡 Broadcasts to all connected clients
-- 🧩 Clean, modular architecture
 
 ---
 
