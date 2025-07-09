@@ -5,13 +5,13 @@ import * as ol from 'ol';
 import { Map, View } from 'ol';
 import VectorSource from 'ol/source/Vector';
 import { Feature } from 'ol';
-import Style from 'ol/style/Style';
 import Icon from 'ol/style/Icon';
 import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
 import { OSM } from 'ol/source';
 import { fromLonLat } from 'ol/proj';
 import { Point } from 'ol/geom';
+import { Style, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -34,11 +34,16 @@ export class AppComponent implements OnInit {
   }
 
   private initMap() {
+    this.markerFeature = new Feature({
+      geometry: new Point(fromLonLat([-122, 37])),
+    });
+
     this.markerFeature.setStyle(
       new Style({
-        image: new Icon({
-          anchor: [0.5, 1],
-          src: 'assets/blast.png',
+        image: new CircleStyle({
+          radius: 7,
+          fill: new Fill({ color: 'rgba(255, 0, 0, 0.8)' }), // red fill
+          stroke: new Stroke({ color: '#fff', width: 2 }), // white border
         }),
       })
     );
@@ -60,7 +65,7 @@ export class AppComponent implements OnInit {
 
   private initSignalR() {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('http://localhost:5164/mapHub')
+      .withUrl('https://localhost:7032/mapHub')
       .build();
 
     this.hubConnection
@@ -68,9 +73,16 @@ export class AppComponent implements OnInit {
       .then(() => console.log('SignalR connected'))
       .catch((err) => console.error('SignalR connection error', err));
 
-    this.hubConnection.on('ReceiveLocation', (lat: number, lon: number) => {
+    this.hubConnection.on('RecieveLocation', (lat: number, lon: number) => {
       const coords = fromLonLat([lon, lat]);
-      (this.markerFeature.getGeometry() as Point).setCoordinates(coords);
+
+      const newFeature = new Feature({
+        geometry: new Point(coords),
+      });
+
+      this.markerSource.addFeature(newFeature);
+      console.log(coords);
+
       this.map.getView().setCenter(coords);
     });
   }

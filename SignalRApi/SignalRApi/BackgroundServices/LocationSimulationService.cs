@@ -21,7 +21,7 @@ namespace SignalRApi.BackgroundServices
                 double lon = -122 + _random.NextDouble();
 
                 await _hubContext.Clients.All.SendAsync(HubIdentifier.RecieveLocation, lat, lon, stoppingToken);
-                await Task.Delay(300, stoppingToken);
+                await Task.Delay(1000, stoppingToken);
             }
         }
     }

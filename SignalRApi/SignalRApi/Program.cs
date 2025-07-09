@@ -6,7 +6,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
 builder.Services.AddSignalR();
 builder.Services.AddHostedService<LocationSimulationService>();
 
@@ -18,10 +27,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseCors(c =>
-    c.AllowAnyOrigin()
-    .AllowAnyHeader()
-    .AllowAnyMethod());
+app.UseCors("CorsPolicy");
 app.UseHttpsRedirection();
 
 app.MapHub<MapHub>("/mapHub");
